@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 //@RunWith(SpringRunner.class)
 @SpringBootTest
-public class AlgafoodApiApplicationTests {
+public class CadastroCozinhaIT {
 
 	@Autowired
 	private CadastroCozinhaService cadastroCozinhaService;
