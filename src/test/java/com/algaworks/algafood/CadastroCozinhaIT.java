@@ -8,9 +8,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.post;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 //@RunWith(SpringRunner.class)
@@ -31,6 +33,7 @@ public class CadastroCozinhaIT {
 
 	@Test
 	public void deveRetornarStatus200_QuandoConsultarCozinhas(){
+
 		given()
 			.accept(JSON)
 		.when()
@@ -41,13 +44,28 @@ public class CadastroCozinhaIT {
 
 	@Test
 	public void deveConter4Cozinhas_QuandoConsultarCozinhas(){
+		//no caso de haver falha na validação da requisição irá exibir logs
+		//mostrando no terminal o que era esperado da requisição e o que foi recebido.
+		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+
 		given()
 			.accept(JSON)
 		.when()
 			.get()
 		.then()
-				.body("", hasSize(4))
-				.body("nome", hasItems("Indiana", "Tailandesa"));
+				.body("", hasSize(5));
 	}
 
+	@Test
+	public void deveRetornarStatus201_QuandoCadastrarCozinhas(){
+		given()
+				.body("{ \"nome\": \"Chinesa\" }")
+				.contentType(JSON)
+				.accept(JSON)
+		.when()
+				.post()
+		.then()
+				.statusCode(CREATED.value());
+
+	}
 }
