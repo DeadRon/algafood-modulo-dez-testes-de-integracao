@@ -1,9 +1,11 @@
 package com.algaworks.algafood;
 
 import io.restassured.RestAssured;
+import org.flywaydb.core.Flyway;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
@@ -22,6 +24,9 @@ public class CadastroCozinhaIT {
 	@LocalServerPort
 	private int port;
 
+	@Autowired
+	private Flyway flyway;
+
 	@BeforeEach
 	public void setup(){
 		//no caso de haver falha na validação da requisição irá exibir logs
@@ -29,6 +34,8 @@ public class CadastroCozinhaIT {
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 		RestAssured.port = port;
 		RestAssured.basePath = "/cozinhas";
+
+		flyway.migrate();
 	}
 
 	@Test
@@ -53,7 +60,7 @@ public class CadastroCozinhaIT {
 		.when()
 			.get()
 		.then()
-				.body("", hasSize(5));
+				.body("", hasSize(4));
 	}
 
 	@Test
@@ -68,4 +75,5 @@ public class CadastroCozinhaIT {
 				.statusCode(CREATED.value());
 
 	}
+
 }
