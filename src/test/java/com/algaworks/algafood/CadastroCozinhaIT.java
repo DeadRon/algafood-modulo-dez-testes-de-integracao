@@ -2,23 +2,22 @@ package com.algaworks.algafood;
 
 import io.restassured.RestAssured;
 import org.flywaydb.core.Flyway;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.TestPropertySource;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.post;
 import static io.restassured.http.ContentType.JSON;
-import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 //@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource({"/application-test.properties"})
 public class CadastroCozinhaIT {
 
 	@LocalServerPort

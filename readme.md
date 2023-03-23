@@ -26,3 +26,9 @@ desenvolvimento da aplicação o que facilita a depuração e compreensão do qu
 - Os problemas acima são evitados com a separação da execução do testes de integração do build utilizando 
 o ***maven-failsafe-plugin***, sua função é permitir a execução dos testes de integração para não afetarem 
 o projeto de build. [Aqui tem um bom material para revisar.](https://www.baeldung.com/maven-integration-test)
+
+### 10.13. Configurando um banco de testes e usando @TestPropertySource
+- quando executar o flyway em ambiente de teste de integração as configurações presente neste commit
+não iram permitir que o arquivo after migrate seja executado.
+- @TestPropertySource permite que um ou mais arquivos de propriedade sejam especificados para serem
+carregados durante a execução do teste.
