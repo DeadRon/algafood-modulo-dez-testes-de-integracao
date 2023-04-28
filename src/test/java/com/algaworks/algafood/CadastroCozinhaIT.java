@@ -1,13 +1,15 @@
 package com.algaworks.algafood;
 
+import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import io.restassured.RestAssured;
-import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
+import util.DatabaseCleaner;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
@@ -17,14 +19,18 @@ import static org.springframework.http.HttpStatus.OK;
 
 //@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource({"/application-test.properties"})
+@TestPropertySource("/application-test.properties")
 public class CadastroCozinhaIT {
+
 
 	@LocalServerPort
 	private int port;
 
+	//@Autowired
+	private DatabaseCleaner databaseCleaner = new DatabaseCleaner();
+
 	@Autowired
-	private Flyway flyway;
+	private CozinhaRepository cozinhaRepository;
 
 	@BeforeEach
 	public void setup(){
@@ -34,12 +40,12 @@ public class CadastroCozinhaIT {
 		RestAssured.port = port;
 		RestAssured.basePath = "/cozinhas";
 
-		flyway.migrate();
+		databaseCleaner.clearTables();
+		prepararDados();
 	}
 
 	@Test
 	public void deveRetornarStatus200_QuandoConsultarCozinhas(){
-
 		given()
 			.accept(JSON)
 		.when()
@@ -49,7 +55,7 @@ public class CadastroCozinhaIT {
 	}
 
 	@Test
-	public void deveConter4Cozinhas_QuandoConsultarCozinhas(){
+	public void deveConter2Cozinhas_QuandoConsultarCozinhas(){
 		//no caso de haver falha na validação da requisição irá exibir logs
 		//mostrando no terminal o que era esperado da requisição e o que foi recebido.
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -59,7 +65,7 @@ public class CadastroCozinhaIT {
 		.when()
 			.get()
 		.then()
-				.body("", hasSize(4));
+				.body("", hasSize(2));
 	}
 
 	@Test
@@ -72,7 +78,16 @@ public class CadastroCozinhaIT {
 				.post()
 		.then()
 				.statusCode(CREATED.value());
+	}
 
+	private void prepararDados(){
+		Cozinha cozinha1 = new Cozinha();
+		cozinha1.setNome("Tailandesa");
+		cozinhaRepository.save(cozinha1);
+
+		Cozinha cozinha2 = new Cozinha();
+		cozinha1.setNome("Americana");
+		cozinhaRepository.save(cozinha1);
 	}
 
 }
